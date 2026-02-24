@@ -1,5 +1,5 @@
 resource "aws_codedeploy_app" "this" {
-  name             = "strapi-codedeploy"
+  name             = "strapi-codedeploy-jeeva"
   compute_platform = "ECS"
 }
 
