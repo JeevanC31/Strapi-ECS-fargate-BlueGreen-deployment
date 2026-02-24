@@ -1,0 +1,21 @@
+{
+  "family": "strapi-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::811738710312:role/ecs_fargate_taskRole",
+  "containerDefinitions": [
+    {
+      "name": "strapi",
+      "image": "IMAGE_URI",
+      "portMappings": [
+        {
+          "containerPort": 1337,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true
+    }
+  ]
+}
