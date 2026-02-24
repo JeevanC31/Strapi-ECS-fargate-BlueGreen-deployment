@@ -9,6 +9,10 @@ data "aws_subnets" "default" {
   }
 }
 
+locals {
+  unique_subnets = slice(data.aws_subnets.default.ids, 0, 2)
+}
+
 
 module "security" {
   source = "./modules/security"
@@ -18,7 +22,7 @@ module "security" {
 module "alb" {
   source         = "./modules/alb"
   vpc_id         = data.aws_vpc.default.id
-  public_subnets = data.aws_subnets.default.ids
+  public_subnets = local.unique_subnets
   alb_sg_id      = module.security.alb_sg_id
 }
 
@@ -26,7 +30,7 @@ module "alb" {
 
 module "ecs" {
   source             = "./modules/ecs"
-  public_subnets     = data.aws_subnets.default.ids
+  public_subnets = local.unique_subnets
   ecs_sg_id          = module.security.ecs_sg_id
   blue_tg_arn        = module.alb.blue_tg.arn
   execution_role_arn = var.ecs_execution_role_arn
