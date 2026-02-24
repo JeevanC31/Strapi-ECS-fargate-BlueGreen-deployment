@@ -1,14 +1,18 @@
 name: Terraform Infrastructure
 
 on:
-  workflow_dispatch:   # manual trigger
+  workflow_dispatch:
   push:
     paths:
-      - 'terraform/**'  # runs only if terraform changes
+      - 'terraform/**'
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_ecs_execution_role_arn: ${{ secrets.TF_VAR_ecs_execution_role_arn }}
+      TF_VAR_codedeploy_role_arn: ${{ secrets.TF_VAR_codedeploy_role_arn }}
 
     defaults:
       run:
