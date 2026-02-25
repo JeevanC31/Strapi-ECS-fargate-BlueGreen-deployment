@@ -10,11 +10,6 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    env:
-      TF_VAR_container_image: ${{ secrets.CONTAINER_IMAGE }}
-      TF_VAR_ecs_execution_role_arn: ${{ secrets.TF_VAR_ecs_execution_role_arn }}
-      TF_VAR_codedeploy_role_arn: ${{ secrets.TF_VAR_codedeploy_role_arn }}
-
     defaults:
       run:
         working-directory: terraform
@@ -41,6 +36,14 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan
+        env:
+          TF_VAR_container_image: ${{ secrets.CONTAINER_IMAGE }}
+          TF_VAR_execution_role_arn: ${{ secrets.TF_VAR_ECS_EXECUTION_ROLE_ARN }}
+          TF_VAR_codedeploy_role_arn: ${{ secrets.TF_VAR_CODEDEPLOY_ROLE_ARN }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        env:
+          TF_VAR_container_image: ${{ secrets.CONTAINER_IMAGE }}
+          TF_VAR_execution_role_arn: ${{ secrets.TF_VAR_ECS_EXECUTION_ROLE_ARN }}
+          TF_VAR_codedeploy_role_arn: ${{ secrets.TF_VAR_CODEDEPLOY_ROLE_ARN }}
