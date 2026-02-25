@@ -41,7 +41,7 @@ module "ecs" {
   source = "./modules/ecs"
 
   container_image = var.container_image
-  public_subnets  = local.unique_subnets
+  public_subnets  = module.alb.public_subnets
   ecs_sg_id       = module.security.ecs_sg_id
   blue_tg_arn     = module.alb.blue_tg.arn
   execution_role_arn = var.execution_role_arn

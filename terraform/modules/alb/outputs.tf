@@ -9,3 +9,6 @@ output "green_tg" {
 output "listener_arn" {
   value = aws_lb_listener.http.arn
 }
+output "public_subnets" {
+  value = var.public_subnets
+}
