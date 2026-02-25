@@ -2,15 +2,11 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_subnets" "default" {
+data "aws_subnets" "public" {
   filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
+    name   = "default-for-az"
+    values = ["true"]
   }
-}
-
-locals {
-  unique_subnets = slice(data.aws_subnets.default.ids, 0, 2)
 }
 
 
