@@ -18,14 +18,14 @@ module "security" {
 module "alb" {
   source         = "./modules/alb"
   vpc_id         = data.aws_vpc.default.id
-  public_subnets = local.unique_subnets
+  subnet_ids     = data.aws_subnets.public.ids
   alb_sg_id      = module.security.alb_sg_id
 }
 
 module "rds" {
   source      = "./modules/rds"
   vpc_id      = data.aws_vpc.default.id
-  subnet_ids  = local.unique_subnets
+  subnet_ids     = data.aws_subnets.public.ids
   ecs_sg_id   = module.security.ecs_sg_id
 
   db_name     = "strapidb"
