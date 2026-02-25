@@ -26,18 +26,30 @@ module "alb" {
   alb_sg_id      = module.security.alb_sg_id
 }
 
-module "ecs" {
-  source             = "./modules/ecs"
-  public_subnets     = local.unique_subnets
-  ecs_sg_id          = module.security.ecs_sg_id
-  blue_tg_arn        = module.alb.blue_tg.arn
-  execution_role_arn = var.ecs_execution_role_arn
-  container_image    = var.container_image
+module "rds" {
+  source      = "./modules/rds"
+  vpc_id      = data.aws_vpc.default.id
+  subnet_ids  = local.unique_subnets
+  ecs_sg_id   = module.security.ecs_sg_id
 
-  db_host            = module.rds.db_endpoint
-  db_name            = "strapidb"
-  db_username        = "strapi"
-  db_password        = "StrapiPass123"
+  db_name     = "strapidb"
+  db_username = "strapi"
+  db_password = "StrapiPass123"
+}
+
+module "ecs" {
+  source = "./modules/ecs"
+
+  container_image = var.container_image
+  public_subnets  = local.unique_subnets
+  ecs_sg_id       = module.security.ecs_sg_id
+  blue_tg_arn     = module.alb.blue_tg.arn
+  execution_role_arn = var.execution_role_arn
+
+  rds_endpoint = module.rds.db_endpoint
+  db_name      = "strapidb"
+  db_username  = "strapi"
+  db_password  = "StrapiPass123"
 }
 
 

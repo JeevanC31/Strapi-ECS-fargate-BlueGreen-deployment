@@ -60,7 +60,7 @@ resource "aws_ecs_task_definition" "this" {
         },
         {
           name  = "DATABASE_HOST"
-          value = var.db_host
+          value = var.rds_endpoint
         },
         {
           name  = "DATABASE_PORT"
