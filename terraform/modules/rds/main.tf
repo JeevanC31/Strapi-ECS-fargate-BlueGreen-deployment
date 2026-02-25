@@ -18,7 +18,7 @@ resource "aws_security_group" "rds_sg" {
 }
 
 resource "aws_db_subnet_group" "this" {
-  name       = "strapi-db-subnet-group"
+  name       = "strapi-db-subnet-group-jeeva"
   subnet_ids = var.subnet_ids
 }
 
