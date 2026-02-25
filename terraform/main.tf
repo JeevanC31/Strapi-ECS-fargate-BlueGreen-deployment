@@ -26,17 +26,19 @@ module "alb" {
   alb_sg_id      = module.security.alb_sg_id
 }
 
-
-
 module "ecs" {
   source             = "./modules/ecs"
-  public_subnets = local.unique_subnets
+  public_subnets     = local.unique_subnets
   ecs_sg_id          = module.security.ecs_sg_id
   blue_tg_arn        = module.alb.blue_tg.arn
   execution_role_arn = var.ecs_execution_role_arn
-  container_image    = "nginx"
-}
+  container_image    = var.container_image
 
+  db_host            = module.rds.db_endpoint
+  db_name            = "strapidb"
+  db_username        = "strapi"
+  db_password        = "StrapiPass123"
+}
 
 
 module "codedeploy" {

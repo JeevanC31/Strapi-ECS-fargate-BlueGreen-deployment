@@ -17,3 +17,6 @@ variable "execution_role_arn" {
 variable "container_image" {
   type = string
 }
+variable "db_host" {
+  type = string
+}

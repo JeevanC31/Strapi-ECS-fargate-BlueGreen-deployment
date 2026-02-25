@@ -8,7 +8,7 @@ resource "aws_ecs_task_definition" "this" {
   network_mode             = "awsvpc"
   cpu                      = 512
   memory                   = 1024
-  execution_role_arn       = "arn:aws:iam::811738710312:role/ecs_fargate_taskRole"
+  execution_role_arn       = var.execution_role_arn
 
   container_definitions = jsonencode([
     {
@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "this" {
         },
         {
           name  = "NODE_ENV"
-          value = "development"
+          value = "production"
         },
         {
           name  = "APP_KEYS"
@@ -51,6 +51,36 @@ resource "aws_ecs_task_definition" "this" {
         {
           name  = "JWT_SECRET"
           value = "randomjwt123"
+        },
+
+        # PostgreSQL Configuration
+        {
+          name  = "DATABASE_CLIENT"
+          value = "postgres"
+        },
+        {
+          name  = "DATABASE_HOST"
+          value = var.db_host
+        },
+        {
+          name  = "DATABASE_PORT"
+          value = "5432"
+        },
+        {
+          name  = "DATABASE_NAME"
+          value = var.db_name
+        },
+        {
+          name  = "DATABASE_USERNAME"
+          value = var.db_username
+        },
+        {
+          name  = "DATABASE_PASSWORD"
+          value = var.db_password
+        },
+        {
+          name  = "DATABASE_SSL"
+          value = "false"
         }
       ]
     }
