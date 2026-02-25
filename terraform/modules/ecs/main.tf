@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "this" {
         },
         {
           name  = "NODE_ENV"
-          value = "production"
+          value = "development"
         },
         {
           name  = "APP_KEYS"
