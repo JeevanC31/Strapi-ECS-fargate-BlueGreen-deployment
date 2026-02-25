@@ -1,6 +1,7 @@
 name: Build & Deploy Strapi (Blue/Green)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
