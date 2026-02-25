@@ -11,17 +11,38 @@ resource "aws_ecs_task_definition" "this" {
   execution_role_arn       = "arn:aws:iam::811738710312:role/ecs_fargate_taskRole"
 
   container_definitions = jsonencode([
-    {
-      name  = "strapi"
-      image = var.container_image
-      portMappings = [
-        {
-          containerPort = 1337
-          protocol      = "tcp"
-        }
-      ]
-    }
-  ])
+  {
+    name      = "strapi"
+    image     = var.container_image
+    essential = true
+
+    portMappings = [
+      {
+        containerPort = 1337
+        protocol      = "tcp"
+      }
+    ]
+
+    environment = [
+      {
+        name  = "HOST"
+        value = "0.0.0.0"
+      },
+      {
+        name  = "PORT"
+        value = "1337"
+      },
+      {
+        name  = "NODE_ENV"
+        value = "production"
+      },
+      {
+        name  = "APP_KEYS"
+        value = "key1,key2,key3,key4"
+      }
+    ]
+  }
+])
 }
 
 resource "aws_ecs_service" "this" {
