@@ -95,8 +95,13 @@ resource "aws_ecs_service" "this" {
   launch_type     = "FARGATE"
   
   lifecycle {
-    ignore_changes = [task_definition]
-  }
+  ignore_changes = [
+    task_definition,
+    network_configuration,
+    load_balancer,
+    desired_count
+  ]
+}
 
   deployment_controller {
     type = "CODE_DEPLOY"
