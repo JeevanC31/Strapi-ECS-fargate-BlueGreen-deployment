@@ -18,7 +18,7 @@ module "security" {
 module "alb" {
   source         = "./modules/alb"
   vpc_id         = data.aws_vpc.default.id
-  subnet_ids     = data.aws_subnets.public.ids
+  public_subnets = data.aws_subnets.public.ids
   alb_sg_id      = module.security.alb_sg_id
 }
 
