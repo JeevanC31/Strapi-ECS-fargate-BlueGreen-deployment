@@ -34,6 +34,11 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Debug Container Image
+        run: echo "IMAGE=$TF_VAR_container_image"
+        env:
+          TF_VAR_container_image: ${{ secrets.CONTAINER_IMAGE }}
+
       - name: Terraform Plan
         run: terraform plan
         env:
