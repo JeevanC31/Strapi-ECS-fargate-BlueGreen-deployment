@@ -51,6 +51,10 @@ resource "aws_ecs_service" "this" {
   task_definition = aws_ecs_task_definition.this.arn
   desired_count   = 1
   launch_type     = "FARGATE"
+  
+  lifecycle {
+    ignore_changes = [task_definition]
+  }
 
   deployment_controller {
     type = "CODE_DEPLOY"
