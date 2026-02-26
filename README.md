@@ -68,7 +68,7 @@ Deployment Strategy:
       - Traffic shifted gradually
       - Old version drained automatically
 
-Deployment configuration:
+Deployment configuration:-
 ```bash
 CodeDeployDefault.ECSCanary10Percent5Minutes
 ```
