@@ -80,6 +80,10 @@ resource "aws_ecs_task_definition" "this" {
         },
         {
           name  = "DATABASE_SSL"
+          value = "true"
+        }
+        {
+          name="DATABASE_SSL_REJECT_UNAUTHORIZED", 
           value = "false"
         }
       ]
@@ -91,8 +95,9 @@ resource "aws_ecs_service" "this" {
   name            = "strapi-service"
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.this.arn
-  desired_count   = 1
+  desired_count   = 2
   launch_type     = "FARGATE"
+  health_check_grace_period_seconds = 180
   
   lifecycle {
   ignore_changes = [
