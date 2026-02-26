@@ -8,7 +8,7 @@
   "containerDefinitions": [
     {
       "name": "strapi",
-      "image": "IMAGE_URI",
+      "image": "811738701312.dkr.ecr.us-east-1.amazonaws.com/strapi:latest",
       "portMappings": [
         {
           "containerPort": 1337,
