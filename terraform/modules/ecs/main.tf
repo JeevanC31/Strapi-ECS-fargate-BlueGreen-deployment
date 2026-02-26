@@ -81,11 +81,11 @@ resource "aws_ecs_task_definition" "this" {
         {
           name  = "DATABASE_SSL"
           value = "true"
-        }
+        },
         {
           name="DATABASE_SSL_REJECT_UNAUTHORIZED", 
           value = "false"
-        }
+        },
       ]
     }
   ])
