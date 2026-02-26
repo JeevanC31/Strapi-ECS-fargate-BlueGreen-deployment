@@ -17,7 +17,7 @@ jobs:
         working-directory: terraform
 
     env:
-      TF_VAR_container_image: "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/strapi-bluegreen:latest"
+      TF_VAR_container_image: "811738710312.dkr.ecr.us-east-1.amazonaws.com/strapi-bluegreen:latest"
       TF_VAR_execution_role_arn: ${{ secrets.TF_VAR_ECS_EXECUTION_ROLE_ARN }}
       TF_VAR_codedeploy_role_arn: ${{ secrets.TF_VAR_CODEDEPLOY_ROLE_ARN }}
 
