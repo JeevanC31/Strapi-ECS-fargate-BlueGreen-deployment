@@ -9,6 +9,15 @@ resource "aws_lb_target_group" "blue" {
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
+
+  health_check {
+    path                = "/"
+    matcher             = "200-399"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
 }
 
 resource "aws_lb_target_group" "green" {
@@ -16,6 +25,15 @@ resource "aws_lb_target_group" "green" {
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
+
+  health_check {
+    path                = "/"
+    matcher             = "200-399"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
 }
 
 resource "aws_lb_listener" "http" {
