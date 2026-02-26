@@ -2,7 +2,7 @@ name: CD - Blue Green Deployment
 
 on:
   workflow_run:
-    workflows: ["CI - Build & Push Docker Image"]
+    workflows: ["CI - Build & Push Image"]
     types:
       - completed
 
@@ -12,12 +12,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # -----------------------------
-      # Configure AWS
-      # -----------------------------
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -25,9 +22,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # -----------------------------
-      # Setup Terraform (Read Remote State)
-      # -----------------------------
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -38,22 +32,14 @@ jobs:
       - name: Read Terraform Outputs
         working-directory: terraform
         run: |
-          echo "CLUSTER_NAME=$(terraform output -raw cluster_name)" >> $GITHUB_ENV
-          echo "SERVICE_NAME=$(terraform output -raw service_name)" >> $GITHUB_ENV
           echo "TASK_FAMILY=$(terraform output -raw task_family)" >> $GITHUB_ENV
           echo "CODEDEPLOY_APP=$(terraform output -raw codedeploy_app_name)" >> $GITHUB_ENV
           echo "DEPLOYMENT_GROUP=$(terraform output -raw deployment_group_name)" >> $GITHUB_ENV
           echo "ECR_REPOSITORY=$(terraform output -raw ecr_repository_url)" >> $GITHUB_ENV
 
-      # -----------------------------
-      # Install jq
-      # -----------------------------
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      # -----------------------------
-      # Get Current Task Definition
-      # -----------------------------
       - name: Get Current Task Definition
         run: |
           aws ecs describe-task-definition \
@@ -61,37 +47,23 @@ jobs:
             --query "taskDefinition" \
             --output json > taskdef.json
 
-      # -----------------------------
-      # Update Image in Task Definition
-      # -----------------------------
-      - name: Update Image in Task Definition
+      - name: Update Image
         run: |
           jq --arg IMAGE "$ECR_REPOSITORY:${{ github.sha }}" \
             '.containerDefinitions[0].image = $IMAGE
-            | del(.taskDefinitionArn,
-                  .revision,
-                  .status,
-                  .requiresAttributes,
-                  .compatibilities,
-                  .registeredAt,
-                  .registeredBy)' \
+            | del(.taskDefinitionArn,.revision,.status,
+                  .requiresAttributes,.compatibilities,
+                  .registeredAt,.registeredBy)' \
             taskdef.json > new-taskdef.json
 
-      # -----------------------------
-      # Register Updated Task Definition
-      # -----------------------------
-      - name: Register Updated Task Definition
+      - name: Register New Task Definition
         run: |
           NEW_TASK_DEF=$(aws ecs register-task-definition \
             --cli-input-json file://new-taskdef.json \
             --query "taskDefinition.taskDefinitionArn" \
             --output text)
-
           echo "NEW_TASK_DEF=$NEW_TASK_DEF" >> $GITHUB_ENV
 
-      # -----------------------------
-      # Create AppSpec File
-      # -----------------------------
       - name: Create AppSpec
         run: |
           cat <<EOF > appspec.json
@@ -114,10 +86,7 @@ jobs:
           }
           EOF
 
-      # -----------------------------
-      # Create Revision JSON
-      # -----------------------------
-      - name: Create revision.json
+      - name: Create Revision JSON
         run: |
           jq -n \
             --arg content "$(cat appspec.json)" \
@@ -128,10 +97,7 @@ jobs:
               }
             }' > revision.json
 
-      # -----------------------------
-      # Trigger CodeDeploy
-      # -----------------------------
-      - name: Trigger CodeDeploy Deployment
+      - name: Trigger CodeDeploy
         run: |
           DEPLOY_ID=$(aws deploy create-deployment \
             --application-name $CODEDEPLOY_APP \
