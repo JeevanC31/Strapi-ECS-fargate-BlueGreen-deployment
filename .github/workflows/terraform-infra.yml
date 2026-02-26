@@ -1,0 +1,54 @@
+name: Terraform Infrastructure
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'terraform/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Debug Container Image
+        run: echo "IMAGE=$TF_VAR_container_image"
+        env:
+          TF_VAR_container_image: ${{ secrets.CONTAINER_IMAGE }}
+
+      - name: Terraform Plan
+        run: terraform plan
+        env:
+          TF_VAR_container_image: ${{ secrets.CONTAINER_IMAGE }}
+          TF_VAR_execution_role_arn: ${{ secrets.TF_VAR_ECS_EXECUTION_ROLE_ARN }}
+          TF_VAR_codedeploy_role_arn: ${{ secrets.TF_VAR_CODEDEPLOY_ROLE_ARN }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_container_image: ${{ secrets.CONTAINER_IMAGE }}
+          TF_VAR_execution_role_arn: ${{ secrets.TF_VAR_ECS_EXECUTION_ROLE_ARN }}
+          TF_VAR_codedeploy_role_arn: ${{ secrets.TF_VAR_CODEDEPLOY_ROLE_ARN }}
