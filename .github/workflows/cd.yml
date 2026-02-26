@@ -76,7 +76,7 @@ jobs:
                   "Properties": {
                     "TaskDefinition": "$NEW_TASK_DEF",
                     "LoadBalancerInfo": {
-                      "ContainerName": "strapi",
+                      "ContainerName": "strapi-app",
                       "ContainerPort": 1337
                     }
                   }
