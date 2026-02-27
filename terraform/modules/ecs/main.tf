@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "this" {
 
   container_definitions = jsonencode([
     {
-      name      = "strapi"
+      name      = "strapi-app"
       image     = var.container_image
       essential = true
 
@@ -120,7 +120,7 @@ resource "aws_ecs_service" "this" {
 
   load_balancer {
     target_group_arn = var.blue_tg_arn
-    container_name   = "strapi"
+    container_name   = "strapi-app"
     container_port   = 1337
   }
 }
